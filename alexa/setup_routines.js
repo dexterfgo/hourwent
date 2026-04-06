@@ -12,6 +12,15 @@
 
 require('dotenv').config();
 const AlexaRemote = require('alexa-remote2');
+const fs = require('fs');
+
+// Warn if .env is readable by group or others (should be chmod 600)
+try {
+  const stat = fs.statSync('.env');
+  if (stat.mode & 0o077) {
+    console.warn('[WARN] .env permissions are too open. Run: chmod 600 .env');
+  }
+} catch (_) { /* .env not found — dotenv already warned */ }
 
 // ── Configuration ────────────────────────────────────────────────────────────
 const SPEAKER_NAME   = process.env.ALEXA_SPEAKER_NAME || 'Living Room Echo';

@@ -1,0 +1,7 @@
+# Environment files with real credentials
+.env
+.env.local
+.env.*.local
+
+# Keep example files
+!.env.example
