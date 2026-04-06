@@ -22,6 +22,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Warn if .env is readable by group or others (should be chmod 600)
+_env_path = os.path.join(os.path.dirname(__file__), ".env")
+if os.path.exists(_env_path) and (os.stat(_env_path).st_mode & 0o077):
+    import warnings
+    warnings.warn(".env permissions are too open. Run: chmod 600 .env", stacklevel=1)
+
 # ── Configuration ─────────────────────────────────────────────────────────────
 SPEAKER_NAME  = os.getenv("GOOGLE_SPEAKER_NAME", "Living Room speaker")
 TTS_LANGUAGE  = os.getenv("TTS_LANGUAGE", "en-us")
