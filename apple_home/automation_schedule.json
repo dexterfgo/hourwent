@@ -1,0 +1,24 @@
+{
+  "_comment": "Each entry below represents one Personal Automation in the Shortcuts app. Create each one under: Shortcuts → Automations → + → Time of Day.",
+  "automations": [
+    { "time": "06:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "07:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "08:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "09:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "10:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "11:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "12:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "13:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "14:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "15:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "16:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "17:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "18:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "19:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "20:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "21:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "22:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "23:00", "shortcut": "Announce the Time", "repeat": "Daily" },
+    { "time": "00:00", "shortcut": "Announce the Time", "repeat": "Daily" }
+  ]
+}

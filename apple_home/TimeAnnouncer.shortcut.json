@@ -1,0 +1,94 @@
+{
+  "_comment": [
+    "Apple Shortcuts – Hourly Time Announcer",
+    "This JSON describes the logic of the Shortcut. To import it:",
+    "  1. Open the Shortcuts app on iPhone/iPad (iOS 16+) or Mac (macOS 13+).",
+    "  2. Create a NEW Shortcut and add the actions described here manually,",
+    "     OR use the 'Import from JSON' feature if available in your iOS version.",
+    "  3. Then create a Personal Automation (see apple_home/README.md) to run",
+    "     this Shortcut at the top of every hour between 6 AM and midnight."
+  ],
+  "shortcut": {
+    "name": "Announce the Time",
+    "icon": "clock",
+    "color": "blue",
+    "actions": [
+      {
+        "action": "getCurrentDate",
+        "output_variable": "CurrentDate"
+      },
+      {
+        "action": "formatDate",
+        "input": "CurrentDate",
+        "format": "Custom",
+        "custom_format": "h a",
+        "output_variable": "HourLabel"
+      },
+      {
+        "action": "formatDate",
+        "input": "CurrentDate",
+        "format": "Custom",
+        "custom_format": "H",
+        "output_variable": "HourNumber"
+      },
+      {
+        "action": "if",
+        "condition": "HourNumber equals 0",
+        "then": [
+          {
+            "action": "setText",
+            "text": "Good night! It is now midnight.",
+            "output_variable": "Greeting"
+          }
+        ],
+        "else_if": [
+          {
+            "condition": "HourNumber is between 6 and 11",
+            "actions": [
+              {
+                "action": "setText",
+                "text": "Good morning! It is now ${HourLabel}.",
+                "output_variable": "Greeting"
+              }
+            ]
+          },
+          {
+            "condition": "HourNumber equals 12",
+            "actions": [
+              {
+                "action": "setText",
+                "text": "Good afternoon! It is now 12 noon.",
+                "output_variable": "Greeting"
+              }
+            ]
+          },
+          {
+            "condition": "HourNumber is between 13 and 17",
+            "actions": [
+              {
+                "action": "setText",
+                "text": "Good afternoon! It is now ${HourLabel}.",
+                "output_variable": "Greeting"
+              }
+            ]
+          },
+          {
+            "condition": "HourNumber is between 18 and 23",
+            "actions": [
+              {
+                "action": "setText",
+                "text": "Good evening! It is now ${HourLabel}.",
+                "output_variable": "Greeting"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "action": "speakText",
+        "text": "Greeting",
+        "note": "Speaks via the HomePod or AirPlay speaker selected in the automation trigger"
+      }
+    ]
+  }
+}

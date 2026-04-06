@@ -1,0 +1,13 @@
+{
+  "name": "alexa-time-announcements",
+  "version": "1.0.0",
+  "description": "Creates hourly time-announcement routines on Alexa (6 AM – midnight)",
+  "main": "setup_routines.js",
+  "scripts": {
+    "setup": "node setup_routines.js"
+  },
+  "dependencies": {
+    "alexa-remote2": "^4.0.0",
+    "dotenv": "^16.0.0"
+  }
+}

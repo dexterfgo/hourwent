@@ -1,0 +1,257 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Google Home – Hourly Time Announcements via Home Assistant
+# Drop this file into your /config/automations/ directory, or paste the
+# individual entries into your automations.yaml.
+#
+# Prerequisites:
+#   • Home Assistant with the Google Cast integration configured
+#   • Replace "media_player.living_room_speaker" with your actual entity ID
+#     (find it under Settings → Devices & Services → Google Cast)
+# ─────────────────────────────────────────────────────────────────────────────
+
+- id: time_announce_0600
+  alias: "Time Announcement – 6 AM"
+  trigger:
+    - platform: time
+      at: "06:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good morning! It is now 6 AM."
+        language: en
+
+- id: time_announce_0700
+  alias: "Time Announcement – 7 AM"
+  trigger:
+    - platform: time
+      at: "07:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good morning! It is now 7 AM."
+        language: en
+
+- id: time_announce_0800
+  alias: "Time Announcement – 8 AM"
+  trigger:
+    - platform: time
+      at: "08:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good morning! It is now 8 AM."
+        language: en
+
+- id: time_announce_0900
+  alias: "Time Announcement – 9 AM"
+  trigger:
+    - platform: time
+      at: "09:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good morning! It is now 9 AM."
+        language: en
+
+- id: time_announce_1000
+  alias: "Time Announcement – 10 AM"
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good morning! It is now 10 AM."
+        language: en
+
+- id: time_announce_1100
+  alias: "Time Announcement – 11 AM"
+  trigger:
+    - platform: time
+      at: "11:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good morning! It is now 11 AM."
+        language: en
+
+- id: time_announce_1200
+  alias: "Time Announcement – 12 Noon"
+  trigger:
+    - platform: time
+      at: "12:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good afternoon! It is now 12 noon."
+        language: en
+
+- id: time_announce_1300
+  alias: "Time Announcement – 1 PM"
+  trigger:
+    - platform: time
+      at: "13:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good afternoon! It is now 1 PM."
+        language: en
+
+- id: time_announce_1400
+  alias: "Time Announcement – 2 PM"
+  trigger:
+    - platform: time
+      at: "14:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good afternoon! It is now 2 PM."
+        language: en
+
+- id: time_announce_1500
+  alias: "Time Announcement – 3 PM"
+  trigger:
+    - platform: time
+      at: "15:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good afternoon! It is now 3 PM."
+        language: en
+
+- id: time_announce_1600
+  alias: "Time Announcement – 4 PM"
+  trigger:
+    - platform: time
+      at: "16:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good afternoon! It is now 4 PM."
+        language: en
+
+- id: time_announce_1700
+  alias: "Time Announcement – 5 PM"
+  trigger:
+    - platform: time
+      at: "17:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good afternoon! It is now 5 PM."
+        language: en
+
+- id: time_announce_1800
+  alias: "Time Announcement – 6 PM"
+  trigger:
+    - platform: time
+      at: "18:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good evening! It is now 6 PM."
+        language: en
+
+- id: time_announce_1900
+  alias: "Time Announcement – 7 PM"
+  trigger:
+    - platform: time
+      at: "19:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good evening! It is now 7 PM."
+        language: en
+
+- id: time_announce_2000
+  alias: "Time Announcement – 8 PM"
+  trigger:
+    - platform: time
+      at: "20:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good evening! It is now 8 PM."
+        language: en
+
+- id: time_announce_2100
+  alias: "Time Announcement – 9 PM"
+  trigger:
+    - platform: time
+      at: "21:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good evening! It is now 9 PM."
+        language: en
+
+- id: time_announce_2200
+  alias: "Time Announcement – 10 PM"
+  trigger:
+    - platform: time
+      at: "22:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good evening! It is now 10 PM."
+        language: en
+
+- id: time_announce_2300
+  alias: "Time Announcement – 11 PM"
+  trigger:
+    - platform: time
+      at: "23:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good evening! It is now 11 PM."
+        language: en
+
+- id: time_announce_0000
+  alias: "Time Announcement – Midnight"
+  trigger:
+    - platform: time
+      at: "00:00:00"
+  action:
+    - service: tts.google_translate_say
+      target:
+        entity_id: media_player.living_room_speaker
+      data:
+        message: "Good night! It is now midnight."
+        language: en
