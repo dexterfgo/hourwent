@@ -23,10 +23,12 @@ try {
 } catch (_) { /* .env not found — dotenv already warned */ }
 
 // ── Configuration ────────────────────────────────────────────────────────────
-const SPEAKER_NAME   = process.env.ALEXA_SPEAKER_NAME || 'Living Room Echo';
-const ALEXA_EMAIL    = process.env.ALEXA_EMAIL;
-const ALEXA_PASS     = process.env.ALEXA_PASSWORD;
-const ALEXA_COOKIE   = process.env.ALEXA_COOKIE || '';   // optional saved cookie
+const SPEAKER_NAME        = process.env.ALEXA_SPEAKER_NAME || 'Living Room Echo';
+const ALEXA_EMAIL         = process.env.ALEXA_EMAIL;
+const ALEXA_PASS          = process.env.ALEXA_PASSWORD;
+const ALEXA_COOKIE        = process.env.ALEXA_COOKIE || '';   // optional saved cookie
+const AMAZON_PAGE         = process.env.AMAZON_PAGE         || 'amazon.com';
+const ALEXA_SERVICE_HOST  = process.env.ALEXA_SERVICE_HOST  || 'pitangui.amazon.com';
 const ROUTINE_PREFIX = 'TimeAnnounce_';
 
 // Time range: START_HOUR and END_HOUR use 24-hour values (0–23).
@@ -107,26 +109,37 @@ function buildRoutinePayload(hour, deviceSerialNumber, deviceType) {
 // ── Main ─────────────────────────────────────────────────────────────────────
 const alexa = new AlexaRemote();
 
+// If no saved cookie, use proxy mode so you can log in via browser (supports MFA).
+// Open http://localhost:3131 in your browser, complete login + MFA, then the
+// library captures the cookie automatically and prints it — save it to ALEXA_COOKIE.
+const useProxy = !ALEXA_COOKIE;
+if (useProxy) {
+  console.log('[INFO] No ALEXA_COOKIE set — starting proxy login.');
+  console.log('[INFO] Open http://localhost:3131 in your browser to log in (MFA supported).');
+}
+
 alexa.init(
   {
     cookie:           ALEXA_COOKIE || undefined,
     email:            ALEXA_EMAIL,
     password:         ALEXA_PASS,
-    alexaServiceHost: 'alexa.amazon.com',
+    alexaServiceHost: ALEXA_SERVICE_HOST,
     userAgent:        'Mozilla/5.0',
     acceptLanguage:   'en-US',
-    amazonPage:       'amazon.com',
+    amazonPage:       AMAZON_PAGE,
     logger:           console.log,
     bluetooth:        false,
     useWsMqtt:        false,
+    // Proxy mode: opens a local browser-based login flow that handles MFA/CAPTCHA
+    ...(useProxy && {
+      proxyOnly:    true,
+      proxyOwnIp:   'localhost',
+      proxyPort:    3131,
+    }),
   },
   async (err) => {
     if (err) {
       console.error('[FATAL] Alexa login failed:', err.message);
-      if (err.message.includes('login')) {
-        console.log('→ Complete the login manually, copy the cookie from your browser,');
-        console.log('  and set ALEXA_COOKIE in your .env file.');
-      }
       process.exit(1);
     }
 
