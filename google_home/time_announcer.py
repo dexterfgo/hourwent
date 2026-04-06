@@ -1,11 +1,11 @@
 """
 Google Home Time Announcer
-Announces the time every hour from 6 AM to midnight on a designated Chromecast/
-Google Home speaker using pychromecast's text-to-speech capability.
+Announces the time every hour within a configurable range on a designated
+Chromecast / Google Home speaker using pychromecast.
 
 Setup:
     pip install -r requirements.txt
-    cp .env.example .env   # fill in SPEAKER_NAME
+    cp .env.example .env   # set SPEAKER_NAME, START_HOUR, END_HOUR
     python time_announcer.py
 
 The script runs as a persistent daemon; keep it running (e.g. via systemd or
@@ -15,21 +15,38 @@ screen) for continuous operation.
 import os
 import time
 import datetime
-import socket
 import logging
 import schedule
 import pychromecast
-from pychromecast.controllers.media import MediaController
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-SPEAKER_NAME     = os.getenv("GOOGLE_SPEAKER_NAME", "Living Room speaker")
-ANNOUNCE_HOURS   = set(range(6, 24)) | {0}   # 6 AM – 11 PM + midnight
-TTS_LANGUAGE     = os.getenv("TTS_LANGUAGE", "en-us")
-TTS_VOLUME       = float(os.getenv("TTS_VOLUME", "0.8"))  # 0.0 – 1.0
-SCAN_TIMEOUT     = 10   # seconds to scan for Chromecast devices
+SPEAKER_NAME  = os.getenv("GOOGLE_SPEAKER_NAME", "Living Room speaker")
+TTS_LANGUAGE  = os.getenv("TTS_LANGUAGE", "en-us")
+TTS_VOLUME    = float(os.getenv("TTS_VOLUME", "0.8"))
+SCAN_TIMEOUT  = 10
+
+# START_HOUR and END_HOUR are 24-hour integers (0–23), both inclusive.
+# Default: 6 AM → midnight (0).  Supports wrap-around (e.g. 22 → 0).
+START_HOUR = int(os.getenv("START_HOUR", "6"))
+END_HOUR   = int(os.getenv("END_HOUR",   "0"))   # 0 = midnight
+
+def _build_hour_range(start: int, end: int) -> set[int]:
+    """Return the set of hours to announce, handling midnight wrap-around."""
+    hours = set()
+    h = start
+    while True:
+        hours.add(h)
+        if h == end:
+            break
+        h = (h + 1) % 24
+        if len(hours) >= 24:   # full day guard
+            break
+    return hours
+
+ANNOUNCE_HOURS = _build_hour_range(START_HOUR, END_HOUR)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -40,11 +57,8 @@ log = logging.getLogger(__name__)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def build_announcement(hour: int) -> str:
-    """Return a natural-language time string for the given hour (0-23)."""
     if hour == 0:
         return "Good night! It is now midnight."
-    if hour == 6:
-        return "Good morning! It is now 6 AM."
     if hour == 12:
         return "Good afternoon! It is now 12 noon."
 
@@ -61,21 +75,14 @@ def build_announcement(hour: int) -> str:
 
 
 def get_tts_url(text: str, lang: str = "en-us") -> str:
-    """
-    Build a Google Translate TTS URL for the announcement.
-    This is a free, no-auth approach for personal/local use.
-    Replace with a proper TTS service (Google Cloud TTS, etc.) for production.
-    """
     from urllib.parse import quote
-    encoded = quote(text)
     return (
         f"https://translate.google.com/translate_tts"
-        f"?ie=UTF-8&client=tw-ob&tl={lang}&q={encoded}"
+        f"?ie=UTF-8&client=tw-ob&tl={lang}&q={quote(text)}"
     )
 
 
-def find_speaker(name: str) -> pychromecast.Chromecast | None:
-    """Scan the local network and return the named Chromecast device."""
+def find_speaker(name: str):
     log.info(f"Scanning for Google Home device: '{name}' …")
     chromecasts, browser = pychromecast.get_listed_chromecasts(
         friendly_names=[name], timeout=SCAN_TIMEOUT
@@ -88,33 +95,26 @@ def find_speaker(name: str) -> pychromecast.Chromecast | None:
 
     cast = chromecasts[0]
     cast.wait()
-    log.info(f"Connected to: {cast.device.friendly_name} "
-             f"({cast.host}:{cast.port})")
+    log.info(f"Connected to: {cast.device.friendly_name} ({cast.host}:{cast.port})")
     return cast
 
 
-def announce(cast: pychromecast.Chromecast, text: str) -> None:
-    """Play a TTS announcement on the Chromecast device."""
+def announce(cast, text: str) -> None:
     log.info(f"Announcing: {text!r}")
     cast.set_volume(TTS_VOLUME)
-
-    mc: MediaController = cast.media_controller
-    tts_url = get_tts_url(text, TTS_LANGUAGE)
-    mc.play_media(tts_url, "audio/mpeg")
+    mc = cast.media_controller
+    mc.play_media(get_tts_url(text, TTS_LANGUAGE), "audio/mpeg")
     mc.block_until_active(timeout=10)
 
 
 # ── Scheduled job ─────────────────────────────────────────────────────────────
 def hourly_job() -> None:
-    now = datetime.datetime.now()
-    hour = now.hour
+    hour = datetime.datetime.now().hour
 
     if hour not in ANNOUNCE_HOURS:
-        return   # outside the 6 AM – midnight window; do nothing
+        return
 
     text = build_announcement(hour)
-
-    # Re-discover the device each time (handles reboots / IP changes)
     cast = find_speaker(SPEAKER_NAME)
     if cast is None:
         log.error("Skipping announcement — device unavailable.")
@@ -130,19 +130,16 @@ def hourly_job() -> None:
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    log.info(f"Google Home Time Announcer starting.")
+    log.info("Google Home Time Announcer starting.")
     log.info(f"Target speaker : {SPEAKER_NAME}")
-    log.info(f"Active hours   : 6 AM – midnight")
+    log.info(f"Active hours   : {sorted(ANNOUNCE_HOURS)} ({len(ANNOUNCE_HOURS)} slots)")
 
-    # Verify device is reachable on startup
     cast = find_speaker(SPEAKER_NAME)
     if cast is None:
         log.warning("Device not found at startup — will retry each hour.")
     else:
-        log.info("Device reachable. Disconnecting until first scheduled run.")
         cast.disconnect()
 
-    # Schedule at the top of every hour (:00)
     schedule.every().hour.at(":00").do(hourly_job)
     log.info("Scheduler running. Press Ctrl+C to stop.")
 

@@ -1,5 +1,15 @@
 {
-  "_comment": "Each entry below represents one Personal Automation in the Shortcuts app. Create each one under: Shortcuts → Automations → + → Time of Day.",
+  "_comment": [
+    "Each entry is one Personal Automation in the Shortcuts app.",
+    "Shortcuts → Automations → + → Time of Day → set time → Run Shortcut → 'Announce the Time'.",
+    "To change the range, remove automations outside your desired hours in the Shortcuts app.",
+    "Default range: 6 AM – midnight (19 slots)."
+  ],
+  "config": {
+    "start_hour": 6,
+    "end_hour": 0,
+    "_note": "Both values are 24-hour (0–23). end_hour 0 = midnight. Edit these, then re-run generate_schedule.js to rebuild the list below."
+  },
   "automations": [
     { "time": "06:00", "shortcut": "Announce the Time", "repeat": "Daily" },
     { "time": "07:00", "shortcut": "Announce the Time", "repeat": "Daily" },
