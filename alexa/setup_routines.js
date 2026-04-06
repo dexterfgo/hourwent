@@ -130,8 +130,10 @@ alexa.init(
     logger:           console.log,
     bluetooth:        false,
     useWsMqtt:        false,
-    // Proxy mode: opens a local browser-based login flow that handles MFA/CAPTCHA
+    // Proxy mode: opens a local browser-based login flow that handles MFA/CAPTCHA.
+    // setupProxy starts the server; proxyOnly skips the automated credential attempt.
     ...(useProxy && {
+      setupProxy:   true,
       proxyOnly:    true,
       proxyOwnIp:   'localhost',
       proxyPort:    3131,
